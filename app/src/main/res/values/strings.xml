@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Easter Explore</string>
+    <string name="church">Church</string>
+    <string name="museum">Museum</string>
+    <string name="park">Park</string>
+    <string name="landmark">Landmark</string>
+    <string name="viewpoint">Viewpoint</string>
+    <string name="restaurant">Restaurant</string>
 </resources>

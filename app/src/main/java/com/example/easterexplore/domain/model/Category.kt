@@ -1,12 +1,13 @@
 package com.example.easterexplore.domain.model
 
-enum class Category(val displayName: String) {
-    CHURCH("Church"),
-    MUSEUM("Museum"),
-    PARK("Park"),
-    LANDMARK("Landmark"),
-    VIEWPOINT("Viewpoint"),
-    RESTAURANT("Restaurant");
+import androidx.annotation.StringRes
+import com.example.easterexplore.R
 
-    override fun toString() = displayName
+enum class Category(@StringRes val displayNameRes: Int) {
+    CHURCH(R.string.church),
+    MUSEUM(R.string.museum),
+    PARK(R.string.park),
+    LANDMARK(R.string.landmark),
+    VIEWPOINT(R.string.viewpoint),
+    RESTAURANT(R.string.restaurant);
 }
