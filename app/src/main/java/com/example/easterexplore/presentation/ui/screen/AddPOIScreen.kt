@@ -1,6 +1,5 @@
 package com.example.easterexplore.presentation.ui.screen
 
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -25,10 +24,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import android.Manifest
-import android.content.Context
 import androidx.activity.result.launch
 import androidx.compose.foundation.Image
 import androidx.compose.ui.graphics.asImageBitmap
@@ -37,12 +34,12 @@ import com.example.easterexplore.domain.model.Location
 import com.example.easterexplore.domain.model.PointOfInterest
 import com.example.easterexplore.presentation.event.POIEvent
 import com.example.easterexplore.presentation.ui.component.DropdownMenuCategory
+import com.example.easterexplore.presentation.utils.FileHelper
+import com.example.easterexplore.presentation.utils.LocationHelper
 import com.example.easterexplore.presentation.viewmodel.POIViewModel
-import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.io.File
-import java.io.FileOutputStream
 
 @Composable
 fun AddPOIScreen(
@@ -68,7 +65,7 @@ fun AddPOIScreen(
         onResult = { bitmap ->
             if (bitmap != null) {
                 imageBitmap = bitmap
-                val path = saveBitmapToInternalStorage(context, bitmap)
+                val path = FileHelper.saveBitmapToInternalStorage(context, bitmap)
                 imageUri = Uri.fromFile(File(path))
             }
         }
@@ -91,14 +88,14 @@ fun AddPOIScreen(
             }
             "getLocation" -> {
                 if (locationGranted) {
-                    fetchLocation(context) { fetchedLocation ->
+                    LocationHelper.fetchLocation(context) { fetchedLocation ->
                         location = fetchedLocation
                         viewModel.add(
                             PointOfInterest(
                                 title = title,
                                 category = selectedCategory,
                                 rating = rating,
-                                location = fetchedLocation,
+                                location = fetchedLocation!!,
                                 imageUri = imageUri?.toString() ?: "",
                                 comments = comments
                             )
@@ -184,26 +181,4 @@ fun AddPOIScreen(
             }
         }
     }
-}
-
-private fun fetchLocation(context: Context, onLocationFetched: (Location) -> Unit) {
-    val fusedClient = LocationServices.getFusedLocationProviderClient(context)
-    if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-        == PackageManager.PERMISSION_GRANTED
-    ) {
-        fusedClient.lastLocation.addOnSuccessListener {
-            if (it != null) {
-                onLocationFetched(Location(it.latitude, it.longitude))
-            }
-        }
-    }
-}
-
-private fun saveBitmapToInternalStorage(context: Context, bitmap: Bitmap): String {
-    val filename = "poi_${System.currentTimeMillis()}.jpg"
-    val file = File(context.filesDir, filename)
-    FileOutputStream(file).use { out ->
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
-    }
-    return file.absolutePath
 }
