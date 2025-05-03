@@ -28,12 +28,23 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import android.Manifest
 import androidx.activity.result.launch
 import androidx.compose.foundation.Image
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.stringResource
+import com.example.easterexplore.R
 import com.example.easterexplore.domain.model.Category
 import com.example.easterexplore.domain.model.Location
 import com.example.easterexplore.domain.model.PointOfInterest
 import com.example.easterexplore.presentation.event.POIEvent
 import com.example.easterexplore.presentation.ui.component.DropdownMenuCategory
+import com.example.easterexplore.presentation.ui.theme.SkyBlue
 import com.example.easterexplore.presentation.utils.FileHelper
 import com.example.easterexplore.presentation.utils.LocationHelper
 import com.example.easterexplore.presentation.viewmodel.POIViewModel
@@ -41,9 +52,11 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.io.File
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddPOIScreen(
     onSave: () -> Unit,
+    onBackPressed: () -> Unit,
     viewModel: POIViewModel = viewModel()
 ) {
     val context = LocalContext.current
@@ -82,7 +95,7 @@ fun AddPOIScreen(
                 if (cameraGranted) cameraLauncher.launch()
                 else {
                     coroutineScope.launch {
-                        snackbarHostState.showSnackbar("Camera permission denied")
+                        snackbarHostState.showSnackbar(context.getString(R.string.camera_permission_denied))
                     }
                 }
             }
@@ -103,7 +116,7 @@ fun AddPOIScreen(
                     }
                 } else {
                     coroutineScope.launch {
-                        snackbarHostState.showSnackbar("Location permission denied")
+                        snackbarHostState.showSnackbar(context.getString(R.string.location_permission_denied))
                     }
                 }
             }
@@ -122,7 +135,23 @@ fun AddPOIScreen(
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(id = R.string.add_new_place)) },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = SkyBlue),
+                navigationIcon = {
+                    IconButton(
+                        onClick = onBackPressed
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(id = R.string.back)
+                        )
+                    }
+                }
+            )
+        }
     ) { padding ->
         Column(
             modifier = Modifier
@@ -132,7 +161,7 @@ fun AddPOIScreen(
             TextField(
                 value = title,
                 onValueChange = { title = it },
-                label = { Text("Title") }
+                label = { Text(stringResource(id = R.string.title)) }
             )
             Spacer(modifier = Modifier.height(8.dp))
             DropdownMenuCategory(
@@ -144,14 +173,14 @@ fun AddPOIScreen(
             TextField(
                 value = rating.toString(),
                 onValueChange = { rating = it.toFloatOrNull() ?: 0f },
-                label = { Text("Rating") }
+                label = { Text(stringResource(id = R.string.rating)) }
             )
             Spacer(modifier = Modifier.height(8.dp))
 
             imageBitmap?.let {
                 Image(
                     bitmap = it.asImageBitmap(),
-                    contentDescription = null,
+                    contentDescription = context.getString(R.string.image),
                     modifier = Modifier.height(200.dp)
                 )
             }
@@ -162,14 +191,14 @@ fun AddPOIScreen(
                     permissionLauncher.launch(arrayOf(Manifest.permission.CAMERA))
                 }
             ) {
-                Text("Take photo")
+                Text(stringResource(id = R.string.take_photo))
             }
 
             Spacer(modifier = Modifier.height(8.dp))
             TextField(
                 value = comments,
                 onValueChange = { comments = it },
-                label = { Text("Comments") }
+                label = { Text(stringResource(id = R.string.comments)) }
             )
             Spacer(modifier = Modifier.height(16.dp))
             Button(
@@ -178,7 +207,7 @@ fun AddPOIScreen(
                     permissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
                 }
             ) {
-                Text("Save")
+                Text(stringResource(id = R.string.save))
             }
         }
     }

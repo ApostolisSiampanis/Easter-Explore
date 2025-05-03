@@ -26,6 +26,7 @@ internal fun MainNavigation(
         composable(MainDestination.AddPOI.route) {
             AddPOIScreen(
                 onSave = { navController.popBackStack() },
+                onBackPressed = { navController.popBackStack() },
                 viewModel = poiViewModel
             )
         }
