@@ -1,7 +1,6 @@
 package com.example.easterexplore.di
 
 import android.content.Context
-import androidx.room.Room
 import com.example.easterexplore.data.db.POIDatabase
 import com.example.easterexplore.data.repository.POIRepositoryImpl
 import com.example.easterexplore.domain.repository.POIRepository

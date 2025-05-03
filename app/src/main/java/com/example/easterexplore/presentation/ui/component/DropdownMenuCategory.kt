@@ -1,5 +1,6 @@
 package com.example.easterexplore.presentation.ui.component
 
+import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
@@ -14,6 +15,7 @@ import com.example.easterexplore.domain.model.Category
 
 @Composable
 fun DropdownMenuCategory(
+    context: Context,
     selected: Category,
     onSelected: (Category) -> Unit
 ) {
@@ -31,7 +33,7 @@ fun DropdownMenuCategory(
         ) {
             Category.entries.forEach { category ->
                 DropdownMenuItem(
-                    text = { Text(category.displayName) },
+                    text = { Text(context.getString(category.displayNameRes)) },
                     onClick = {
                         expanded = false
                         onSelected(category)
