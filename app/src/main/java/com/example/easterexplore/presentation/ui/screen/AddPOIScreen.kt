@@ -136,6 +136,7 @@ fun AddPOIScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
             DropdownMenuCategory(
+                context = context,
                 selected = selectedCategory,
                 onSelected = { selectedCategory = it }
             )

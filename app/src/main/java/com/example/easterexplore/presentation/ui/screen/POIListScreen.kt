@@ -27,6 +27,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
@@ -78,10 +79,9 @@ fun POIListScreen(
                             modifier = Modifier.weight(1f)
                         ) {
                             Text(poi.title, style = MaterialTheme.typography.titleMedium)
-                            Text("Category: ${poi.category.displayName}")
+                            Text("Category: ${stringResource(id = poi.category.displayNameRes)}")
                             Text("Rating: ${poi.rating}")
                             Text("Location: ${poi.location.latitude}, ${poi.location.longitude}")
-                            //Text("Image: ${poi.imageUri}")
                             if (poi.imageUri.isNotBlank()) {
                                 val model = if (poi.imageUri.startsWith("file://") || poi.imageUri.startsWith("/")) {
                                     "file://${poi.imageUri.removePrefix("file://")}"
