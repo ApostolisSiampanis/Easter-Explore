@@ -1,4 +1,4 @@
-package com.example.easterexplore.ui.theme
+package com.example.easterexplore.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
