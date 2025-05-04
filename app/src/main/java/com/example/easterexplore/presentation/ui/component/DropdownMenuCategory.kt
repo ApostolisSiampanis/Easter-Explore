@@ -22,6 +22,13 @@ import androidx.compose.ui.res.stringResource
 import com.example.easterexplore.R
 import com.example.easterexplore.domain.model.Category
 
+/**
+ * A composable function that displays a dropdown menu for selecting a category.
+ *
+ * @param context The context used to retrieve string resources.
+ * @param selected The currently selected category.
+ * @param onSelected Callback function to handle the selection of a category.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DropdownMenuCategory(
@@ -29,6 +36,7 @@ fun DropdownMenuCategory(
     selected: Category,
     onSelected: (Category) -> Unit
 ) {
+    // A state variable to control the expanded state of the dropdown menu
     var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(

@@ -13,7 +13,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -62,6 +61,13 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.io.File
 
+/**
+ * Composable function to display the Add POI screen.
+ *
+ * @param onSave Callback to be invoked when the POI is saved successfully.
+ * @param onBackPressed Callback to be invoked when the back button is pressed.
+ * @param viewModel The ViewModel instance for managing POI data.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddPOIScreen(
@@ -69,9 +75,12 @@ fun AddPOIScreen(
     onBackPressed: () -> Unit,
     viewModel: POIViewModel = viewModel()
 ) {
+    // Context for Ui-related operations
     val context = LocalContext.current
+    // State for Snackbar
     val snackbarHostState = remember { SnackbarHostState() }
 
+    // State variables for the form fields
     var title by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf(Category.PARK) }
     var rating by remember { mutableStateOf(0f) }
@@ -80,7 +89,9 @@ fun AddPOIScreen(
     var imageBitmap by remember { mutableStateOf<Bitmap?>(null) }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
+    // State variable to track pending permissions
     var pendingAction by remember { mutableStateOf<String?>(null) }
+    // Coroutine scope for launching coroutines
     val coroutineScope = rememberCoroutineScope()
 
     val cameraLauncher = rememberLauncherForActivityResult(

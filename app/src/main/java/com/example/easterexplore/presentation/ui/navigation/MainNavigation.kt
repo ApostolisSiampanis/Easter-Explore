@@ -8,11 +8,23 @@ import com.example.easterexplore.presentation.ui.screen.AddPOIScreen
 import com.example.easterexplore.presentation.ui.screen.POIListScreen
 import com.example.easterexplore.presentation.viewmodel.POIViewModel
 
+/**
+ * Main navigation function for the application.
+ *
+ * This function sets up the navigation graph for the app, defining the different screens and their
+ * corresponding composable functions. It uses Jetpack Compose's Navigation component to handle
+ * navigation between screens.
+ *
+ * @param poiViewModel The ViewModel instance used for managing points of interest (POI) data.
+ */
 @Composable
 internal fun MainNavigation(
     poiViewModel: POIViewModel
 ) {
+    // Initialize the navigation controller
     val navController = rememberNavController()
+
+    // Define the navigation graph with NavHost
     NavHost(
         navController = navController,
         startDestination = MainDestination.POIList.route

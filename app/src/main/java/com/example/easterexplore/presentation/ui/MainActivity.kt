@@ -13,6 +13,10 @@ import com.example.easterexplore.EasterExplore
 import com.example.easterexplore.presentation.ui.navigation.MainNavigation
 import com.example.easterexplore.presentation.viewmodel.POIViewModel
 
+/**
+ * MainActivity serves as the entry point of the application.
+ * It sets up the main content view and initializes the ViewModel.
+ */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

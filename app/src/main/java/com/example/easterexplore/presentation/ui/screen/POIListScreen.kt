@@ -39,7 +39,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -51,14 +50,23 @@ import com.example.easterexplore.presentation.ui.theme.SkyBlue
 import com.example.easterexplore.presentation.viewmodel.POIViewModel
 import kotlinx.coroutines.flow.collectLatest
 
+/**
+ * A screen that displays a list of points of interest (POIs).
+ *
+ * @param onAddClick Callback function to be invoked when the add button is clicked.
+ * @param viewModel The ViewModel instance for managing POI data.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun POIListScreen(
     onAddClick: () -> Unit,
     viewModel: POIViewModel = viewModel()
 ) {
+    // Collect the UI state from the ViewModel
     val uiState by viewModel.state.collectAsState()
+    // Initialize SnackbarHostState for displaying snackbars
     val snackbarHostState = remember { SnackbarHostState() }
+    // State to hold the selected POI for displaying in the dialog
     var selectedPOI by remember { mutableStateOf<PointOfInterest?>(null) }
 
     LaunchedEffect(Unit) {
@@ -66,6 +74,7 @@ fun POIListScreen(
             if (event is POIEvent.ShowError) snackbarHostState.showSnackbar(event.message)
         }
     }
+
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
