@@ -28,15 +28,25 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import android.Manifest
 import androidx.activity.result.launch
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.easterexplore.R
 import com.example.easterexplore.domain.model.Category
@@ -156,12 +166,14 @@ fun AddPOIScreen(
         Column(
             modifier = Modifier
                 .padding(padding)
-                .padding(16.dp)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TextField(
+            OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
-                label = { Text(stringResource(id = R.string.title)) }
+                label = { Text(stringResource(id = R.string.title)) },
+                modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(8.dp))
             DropdownMenuCategory(
@@ -170,44 +182,94 @@ fun AddPOIScreen(
                 onSelected = { selectedCategory = it }
             )
             Spacer(modifier = Modifier.height(8.dp))
-            TextField(
-                value = rating.toString(),
-                onValueChange = { rating = it.toFloatOrNull() ?: 0f },
-                label = { Text(stringResource(id = R.string.rating)) }
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            imageBitmap?.let {
-                Image(
-                    bitmap = it.asImageBitmap(),
-                    contentDescription = context.getString(R.string.image),
-                    modifier = Modifier.height(200.dp)
-                )
-            }
-
-            Button(
-                onClick = {
-                    pendingAction = "takePhoto"
-                    permissionLauncher.launch(arrayOf(Manifest.permission.CAMERA))
-                }
+            Column(
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text(stringResource(id = R.string.take_photo))
-            }
+                Text(
+                    text = stringResource(id = R.string.rating) + ": ${String.format("%.1f", rating)}",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Slider(
+                        value = rating,
+                        onValueChange = { rating = it },
+                        valueRange = 0f..10f,
+                        steps = 19,
+                        modifier = Modifier.fillMaxWidth(0.8f),
+                        colors = SliderDefaults.colors(
+                            thumbColor = SkyBlue,
+                            activeTrackColor = SkyBlue,
+                            inactiveTrackColor = SkyBlue
+                        )
+                    )
+                }
 
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = if (imageBitmap != null) Arrangement.SpaceBetween else Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                imageBitmap?.let {
+                    Image(
+                        bitmap = it.asImageBitmap(),
+                        contentDescription = context.getString(R.string.image),
+                        modifier = Modifier
+                            .height(200.dp)
+                            .weight(1f)
+                    )
+                }
+
+                Column(
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Button(
+                        onClick = {
+                            pendingAction = "takePhoto"
+                            permissionLauncher.launch(arrayOf(Manifest.permission.CAMERA))
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = SkyBlue
+                        )
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.photo_camera),
+                            contentDescription = stringResource(id = R.string.take_photo),
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
+                }
+            }
             Spacer(modifier = Modifier.height(8.dp))
-            TextField(
+
+            OutlinedTextField(
                 value = comments,
                 onValueChange = { comments = it },
-                label = { Text(stringResource(id = R.string.comments)) }
+                label = { Text(stringResource(id = R.string.comments)) },
+                modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(16.dp))
+
             Button(
                 onClick = {
                     pendingAction = "getLocation"
                     permissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
-                }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = SkyBlue
+                )
             ) {
-                Text(stringResource(id = R.string.save))
+                Text(
+                    text = stringResource(id = R.string.save),
+                    color = Color.Black
+                )
             }
         }
     }
