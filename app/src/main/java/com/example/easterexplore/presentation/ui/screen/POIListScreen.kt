@@ -1,7 +1,9 @@
 package com.example.easterexplore.presentation.ui.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardDefaults.cardElevation
@@ -30,7 +33,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.easterexplore.R
+import com.example.easterexplore.domain.model.PointOfInterest
 import com.example.easterexplore.presentation.event.POIEvent
 import com.example.easterexplore.presentation.ui.theme.SkyBlue
 import com.example.easterexplore.presentation.viewmodel.POIViewModel
@@ -51,9 +57,9 @@ fun POIListScreen(
     onAddClick: () -> Unit,
     viewModel: POIViewModel = viewModel()
 ) {
-    val context = LocalContext.current
     val uiState by viewModel.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    var selectedPOI by remember { mutableStateOf<PointOfInterest?>(null) }
 
     LaunchedEffect(Unit) {
         viewModel.event.collectLatest { event ->
@@ -92,7 +98,8 @@ fun POIListScreen(
                         .background(
                             shape = MaterialTheme.shapes.medium,
                             color = Color.White
-                        ),
+                        )
+                        .clickable { selectedPOI = poi },
                     colors = CardDefaults.cardColors(
                         containerColor = Color.White
                     ),
@@ -106,30 +113,16 @@ fun POIListScreen(
                         Column(
                             modifier = Modifier.weight(1f)
                         ) {
-                            Text(poi.title, style = MaterialTheme.typography.titleMedium)
-                            Text("${stringResource(id = R.string.category)}: ${stringResource(id = poi.category.displayNameRes)}")
-                            Text("${stringResource(id = R.string.rating)}: ${poi.rating}")
-                            Text("${stringResource(id = R.string.location)}: ${poi.location.latitude}, ${poi.location.longitude}")
-                            if (poi.imageUri.isNotBlank()) {
-                                val model = if (poi.imageUri.startsWith("file://") || poi.imageUri.startsWith("/")) {
-                                    "file://${poi.imageUri.removePrefix("file://")}"
-                                } else {
-                                    poi.imageUri
-                                }
-
-                                AsyncImage(
-                                    model = model,
-                                    contentDescription = context.getString(R.string.image),
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(top = 8.dp)
-                                )
-                            }
-
-
-                            Text("${stringResource(id = R.string.comments)}: ${poi.comments}")
-                            //TODO: add more details
-                            // Make card clickable to show more details
+                            Text(
+                                text = poi.title,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Text(
+                                text = "${stringResource(id = R.string.category)}: ${stringResource(id = poi.category.displayNameRes)}"
+                            )
+                            Text(
+                                text = "${stringResource(id = R.string.rating)}: ${poi.rating}"
+                            )
                         }
                         IconButton(
                             onClick = { viewModel.delete(poi) }
@@ -144,6 +137,58 @@ fun POIListScreen(
                 }
             }
         }
-    }
 
+        selectedPOI?.let { poi ->
+            BasicAlertDialog(
+                onDismissRequest = { selectedPOI = null },
+                content = {
+                    Box(
+                        modifier = Modifier
+                            .background(Color.White)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Text(
+                                text = poi.title,
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                            Text(
+                                text = "${stringResource(id = R.string.category)}: ${stringResource(id = poi.category.displayNameRes)}",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            Text(
+                                text = "${stringResource(id = R.string.rating)}: ${poi.rating}",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            if (poi.imageUri.isNotBlank()) {
+                                val model = if (poi.imageUri.startsWith("file://") || poi.imageUri.startsWith("/")) {
+                                    "file://${poi.imageUri.removePrefix("file://")}"
+                                } else {
+                                    poi.imageUri
+                                }
+
+                                AsyncImage(
+                                    model = model,
+                                    contentDescription = stringResource(id = R.string.image),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 8.dp)
+                                )
+                            }
+                            Text(
+                                text = "${stringResource(id = R.string.location)}: ${poi.location.latitude}, ${poi.location.longitude}",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            Text(
+                                text = "${stringResource(id = R.string.comments)}: ${poi.comments}",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                    }
+                }
+            )
+        }
+
+    }
 }
