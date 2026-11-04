@@ -1,5 +1,12 @@
 # Easter Explore
 
+## [University of Piraeus](https://www.unipi.gr/en/home/) | [Department of Informatics](https://cs.unipi.gr/en/)
+**MSc course**: Mobile Software Development
+
+**Semester**: 2
+
+**Project Completion Year**: 2025
+
 ## Project Overview
 
 Easter Explore is an Android application for saving and browsing points of interest (POIs) you visit. Users can add a place with a title, category, rating, comments and a photo, and the app records the place's location automatically using the device's GPS.
@@ -82,6 +89,9 @@ The app is built with Kotlin and Jetpack Compose, follows the Clean Architecture
 2. Open the project in Android Studio.
 3. Let Gradle sync the dependencies.
 4. Build and run the app on an Android device or emulator.
+
+## Acknowledgments
+This project was developed as part of the "Mobile Software Development" MSc course at the University of Piraeus. Contributions and feedback are always welcome!
 
 ## License
 
